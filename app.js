@@ -8,7 +8,16 @@ const SITE_DATA = {
     season: "Fall 2025",
     dates: { start: "2025-09-14", end: "2025-11-20" },
     discord_url: "#",
-    contact_email: "you@example.com"
+    contact_email: "you@example.com",
+    church: {
+      name: "Church for the One",
+      website: "https://example.com",
+      services: [
+        { day: "Sunday", time: "9:30 AM", location: "Main Campus" },
+        { day: "Sunday", time: "11:00 AM", location: "Main Campus" },
+        { day: "Wednesday", time: "7:00 PM", location: "Midweek" }
+      ]
+    }
   },
   games: [
     {
@@ -204,11 +213,40 @@ function initNav(){
   $("#contactEmail").href = "mailto:" + SITE_DATA.group.contact_email;
 }
 
+
+// ----- Render Church Section -----
+function renderChurch(){
+  const church = SITE_DATA.group.church || {name:"Church for the One", website:"#", services:[]};
+  const nameEl = document.getElementById("churchName");
+  const siteEl = document.getElementById("churchWebsite");
+  const grid = document.getElementById("churchGrid");
+  if(nameEl) nameEl.textContent = church.name;
+  if(siteEl){ siteEl.href = church.website || "#"; }
+  if(grid){
+    grid.innerHTML = "";
+    if(church.services && church.services.length){
+      church.services.forEach(svc => {
+        const card = document.createElement("article");
+        card.className = "card feature";
+        card.innerHTML = `<div class="feature-icon" aria-hidden="true">⛪</div>
+          <h3>${escapeHTML(svc.day)}</h3>
+          <p><strong>${escapeHTML(svc.time)}</strong><br/><span class="muted">${escapeHTML(svc.location || "")}</span></p>`;
+        grid.appendChild(card);
+      });
+    }else{
+      const p = document.createElement("p");
+      p.textContent = "Service times coming soon.";
+      grid.appendChild(p);
+    }
+  }
+}
+
 // ----- Init -----
 document.addEventListener("DOMContentLoaded", () => {
   initNav();
   renderSchedule();
   renderGames();
+  renderChurch();
 });
 
 // Respect reduced motion for any JS-based animation (none used currently).
