@@ -1,13 +1,13 @@
-// CTRL + Faith – app.js (vanilla JS, no frameworks)
+// CTRL + Faith – app.js v2
 
-// ----- SITE DATA (embed/edit here) -----
+// ----- SITE DATA -----
 const SITE_DATA = {
   group: {
     name: "CTRL + Faith – God in Control",
     tagline: "Gaming, Building, Serving Together",
     season: "Fall 2025",
     dates: { start: "2025-09-14", end: "2025-11-20" },
-    discord_url: "#",
+    discord_url: "#", // TODO: put your Discord invite here
     contact_email: "zacharyjones13@gmail.com",
     church: {
       name: "Church for the One",
@@ -16,14 +16,6 @@ const SITE_DATA = {
         { day: "Sunday", time: "9:00 AM", location: "Main Campus" },
         { day: "Sunday", time: "11:00 AM", location: "Main Campus" },
         { day: "Sunday", time: "5:00 PM", location: "Evening Service" }
-      ]
-    },
-        { day: "Sunday", time: "10:45 AM", location: "Main Campus" },
-        { day: "Wednesday", time: "6:30 PM", location: "Midweek Service" }
-      ]
-    },
-        { day: "Sunday", time: "11:00 AM", location: "Main Campus" },
-        { day: "Wednesday", time: "7:00 PM", location: "Midweek" }
       ]
     }
   },
@@ -80,64 +72,39 @@ const SITE_DATA = {
 
 // ----- Helpers -----
 const $ = sel => document.querySelector(sel);
-const $$ = sel => Array.from(document.querySelectorAll(sel));
-
 function fmtDate(iso){
   const d = new Date(iso+"T00:00:00");
   return d.toLocaleDateString(undefined,{month:"short", day:"numeric"});
 }
+function escapeHTML(str){ return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 
-function escapeHTML(str){
-  return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-}
-
-// Generate ICS string for a week card
 function makeICS(week){
-  // Default start time 7:00 PM local, 90 min duration
   const start = new Date(week.date + "T19:00:00");
   const end = new Date(start.getTime() + 90*60000);
   const pad = n => String(n).padStart(2,'0');
-  const dt = d => d.getUTCFullYear()
-      + pad(d.getUTCMonth()+1) + pad(d.getUTCDate())
-      + "T" + pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + "00Z";
-
+  const dt = d => d.getUTCFullYear()+pad(d.getUTCMonth()+1)+pad(d.getUTCDate())+"T"+pad(d.getUTCHours())+pad(d.getUTCMinutes())+"00Z";
   const title = `CTRL + Faith – Week ${week.week}: ${week.theme}`;
   const desc = `Devotion: ${week.scripture}\nGame: ${week.game}\nService: ${week.service}\nMore: ${location.href}`;
-
-  return [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//CTRL+Faith//Schedule//EN",
-    "BEGIN:VEVENT",
-    "UID:" + crypto.randomUUID(),
-    "DTSTAMP:" + dt(new Date()),
-    "DTSTART:" + dt(start),
-    "DTEND:" + dt(end),
-    "SUMMARY:" + title.replace(/[,;]/g,""),
-    "DESCRIPTION:" + desc.replace(/[\n,;]/g, " "),
-    "END:VEVENT",
-    "END:VCALENDAR"
-  ].join("\r\n");
+  return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//CTRL+Faith//Schedule//EN","BEGIN:VEVENT",
+    "UID:"+crypto.randomUUID(),"DTSTAMP:"+dt(new Date()),"DTSTART:"+dt(start),"DTEND:"+dt(end),
+    "SUMMARY:"+title.replace(/[,;]/g,""),"DESCRIPTION:"+desc.replace(/[\n,;]/g," "),"END:VEVENT","END:VCALENDAR"].join("\r\n");
 }
 
 function download(filename, content, type="text/calendar"){
   const blob = new Blob([content], {type});
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename; a.click();
-  setTimeout(()=>URL.revokeObjectURL(url), 1500);
+  const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url), 1200);
 }
 
 // ----- Render Schedule -----
 function renderSchedule(){
-  $("#seasonRange").textContent = `${fmtDate(SITE_DATA.group.dates.start)}–${fmtDate(SITE_DATA.group.dates.end)}`;
-  const grid = $("#weekGrid");
-  grid.innerHTML = "";
-
+  const range = `${fmtDate(SITE_DATA.group.dates.start)}–${fmtDate(SITE_DATA.group.dates.end)}`;
+  document.getElementById("seasonRange").textContent = range;
+  const grid = document.getElementById("weekGrid"); grid.innerHTML = "";
   SITE_DATA.weeks.forEach(week => {
     const card = document.createElement("article");
     card.className = "week-card";
-    card.setAttribute("role","listitem");
     card.innerHTML = `
       <h3>Week ${week.week} – ${fmtDate(week.date)} — ${escapeHTML(week.theme)}</h3>
       <div class="week-meta">
@@ -153,43 +120,54 @@ function renderSchedule(){
       <div class="details">
         <p><strong>Service Focus:</strong> ${escapeHTML(week.service)}</p>
         <p class="muted">Plan: 10m welcome • 5–10m devotion • 60–90m game • 5–10m prayer</p>
-      </div>
-    `;
-    card.querySelector('[data-action="toggle"]').addEventListener('click',()=>{
-      card.classList.toggle('open');
-    });
-    card.querySelector('[data-action="ics"]').addEventListener('click',()=>{
-      download(`ctrl-faith-week-${week.week}.ics`, makeICS(week));
-    });
+      </div>`;
+    card.querySelector('[data-action="toggle"]').addEventListener('click',()=> card.classList.toggle('open'));
+    card.querySelector('[data-action="ics"]').addEventListener('click',()=> download(`ctrl-faith-week-${week.week}.ics`, makeICS(week)));
     card.querySelector('[data-action="copy"]').addEventListener('click', async ()=>{
       const msg = `Join me for CTRL + Faith – Week ${week.week} (${fmtDate(week.date)}): ${week.theme}\nScripture: ${week.scripture}\nGame: ${week.game}\nService: ${week.service}\n\nDetails: ${location.href}`;
-      try{
-        await navigator.clipboard.writeText(msg);
-        alert("Invite copied to clipboard!");
-      }catch(e){
-        prompt("Copy this invite text:", msg);
-      }
+      try{ await navigator.clipboard.writeText(msg); alert("Invite copied to clipboard!"); }catch{ prompt("Copy this invite text:", msg); }
     });
     grid.appendChild(card);
   });
 }
 
-// ----- Render Game Setup Accordions -----
+// ----- Render Game Setup -----
 function renderGames(){
-  const acc = $("#gameAccordions");
-  acc.innerHTML = "";
-  SITE_DATA.games.forEach(game => {
-    const det = document.createElement('details');
-    const plat = game.platforms.join(", ");
-    det.innerHTML = `
-      <summary>${escapeHTML(game.name)}</summary>
-      <p><strong>Platforms:</strong> ${escapeHTML(plat)}</p>
-      <p><strong>Cross‑play:</strong> ${game.crossplay ? "Yes" : "No"}</p>
-      <p class="muted">${escapeHTML(game.notes)}</p>
-      <ul>${game.prep.map(p=>`<li>${escapeHTML(p)}</li>`).join("")}</ul>
-    `;
+  const acc = document.getElementById("gameAccordions"); acc.innerHTML = "";
+  SITE_DATA.games.forEach(g => {
+    const det = document.createElement("details");
+    det.innerHTML = `<summary>${escapeHTML(g.name)}</summary>
+      <p><strong>Platforms:</strong> ${escapeHTML(g.platforms.join(", "))}</p>
+      <p><strong>Cross-play:</strong> ${g.crossplay ? "Yes" : "No"}</p>
+      <p class="muted">${escapeHTML(g.notes)}</p>
+      <ul>${g.prep.map(p=>`<li>${escapeHTML(p)}</li>`).join("")}</ul>`;
     acc.appendChild(det);
   });
+}
+
+// ----- Render Church Section -----
+function renderChurch(){
+  const church = SITE_DATA.group.church || {name:"Church for the One", website:"#", services:[]};
+  const nameEl = document.getElementById("churchName");
+  const siteEl = document.getElementById("churchWebsite");
+  const grid = document.getElementById("churchGrid");
+  if(nameEl) nameEl.textContent = church.name;
+  if(siteEl) siteEl.href = church.website || "#";
+  grid.innerHTML = "";
+  if(church.services && church.services.length){
+    church.services.forEach(svc => {
+      const card = document.createElement("article");
+      card.className = "card feature";
+      card.innerHTML = `<div class="feature-icon" aria-hidden="true">⛪</div>
+        <h3>${escapeHTML(svc.day)}</h3>
+        <p><strong>${escapeHTML(svc.time)}</strong><br/><span class="muted">${escapeHTML(svc.location || "")}</span></p>`;
+      grid.appendChild(card);
+    });
+  } else {
+    const p = document.createElement("p");
+    p.textContent = "Service times coming soon.";
+    grid.appendChild(p);
+  }
 }
 
 // ----- Form mailto -----
@@ -204,9 +182,9 @@ function openMailto(form){
   return false;
 }
 
-// ----- Nav + footer wiring -----
-function initNav(){
-  $("#year").textContent = new Date().getFullYear();
+// ----- Init -----
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("year").textContent = new Date().getFullYear();
   const toggle = document.querySelector(".nav-toggle");
   const links = document.getElementById("nav-links");
   toggle.addEventListener("click", ()=>{
@@ -214,47 +192,13 @@ function initNav(){
     toggle.setAttribute("aria-expanded", open ? "true":"false");
   });
   // Discord links
-  const discord = SITE_DATA.group.discord_url || "#";
-  $("#discordTop").href = discord;
-  $("#discordHero").href = discord;
-  $("#discordFooter").href = discord;
-  $("#contactEmail").href = "mailto:" + SITE_DATA.group.contact_email;
-}
+  const d = SITE_DATA.group.discord_url || "#";
+  document.getElementById("discordTop").href = d;
+  document.getElementById("discordHero").href = d;
+  document.getElementById("discordFooter").href = d;
+  document.getElementById("contactEmail").href = "mailto:" + SITE_DATA.group.contact_email;
 
-
-// ----- Render Church Section -----
-function renderChurch(){
-  const church = SITE_DATA.group.church || {name:"Church for the One", website: "https://churchforthe.one", services:[]};
-  const nameEl = document.getElementById("churchName");
-  const siteEl = document.getElementById("churchWebsite");
-  const grid = document.getElementById("churchGrid");
-  if(nameEl) nameEl.textContent = church.name;
-  if(siteEl){ siteEl.href = church.website || "#"; }
-  if(grid){
-    grid.innerHTML = "";
-    if(church.services && church.services.length){
-      church.services.forEach(svc => {
-        const card = document.createElement("article");
-        card.className = "card feature";
-        card.innerHTML = `<div class="feature-icon" aria-hidden="true">⛪</div>
-          <h3>${escapeHTML(svc.day)}</h3>
-          <p><strong>${escapeHTML(svc.time)}</strong><br/><span class="muted">${escapeHTML(svc.location || "")}</span></p>`;
-        grid.appendChild(card);
-      });
-    }else{
-      const p = document.createElement("p");
-      p.textContent = "Service times coming soon.";
-      grid.appendChild(p);
-    }
-  }
-}
-
-// ----- Init -----
-document.addEventListener("DOMContentLoaded", () => {
-  initNav();
   renderSchedule();
   renderGames();
   renderChurch();
 });
-
-// Respect reduced motion for any JS-based animation (none used currently).
