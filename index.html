@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CTRL + Faith – God in Control</title>
+  <meta name="description" content="Gaming, Building, Serving Together — A church gaming & tech fellowship.">
+  <meta property="og:title" content="CTRL + Faith – God in Control" />
+  <meta property="og:description" content="Gaming, Building, Serving Together — A church gaming & tech fellowship." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="assets/og-image.png" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- 
+    Deployment notes (Cloudflare Pages):
+    - Static site; no build step needed.
+    - Push these files to a GitHub repo.
+    - In Cloudflare Pages: Create project -> Connect to Git -> Build command: (leave blank) -> Output directory: /
+  -->
+  <header class="site-header">
+    <nav class="nav">
+      <a class="brand" href="#home" aria-label="CTRL + Faith Home">
+        <span class="ctrl-key" aria-hidden="true">CTRL</span><span class="plus">+</span><span class="faith">FAITH</span>
+      </a>
+      <button class="nav-toggle" aria-controls="nav-links" aria-expanded="false">☰</button>
+      <ul id="nav-links" class="nav-links">
+        <li><a href="#mission">Mission</a></li>
+        <li><a href="#schedule">Schedule</a></li>
+        <li><a href="#games">Game Setup</a></li>
+        <li><a href="#involved">Get Involved</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a class="cta" id="discordTop" href="#" rel="noopener">Join Discord</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="home">
+    <section class="hero" role="banner">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="hero-content">
+        <h1>CTRL + Faith <span class="sub">God in Control</span></h1>
+        <p class="tagline">Gaming, Building, Serving Together.</p>
+        <div class="hero-ctas">
+          <a class="btn primary" href="#schedule">View Weekly Plan</a>
+          <a class="btn" id="discordHero" href="#" rel="noopener">Join the Group</a>
+        </div>
+      </div>
+      <div class="hero-icons" aria-hidden="true">
+        <!-- Simple inline SVG icons -->
+        <svg class="icon controller" viewBox="0 0 64 64" role="img" aria-label="controller"><path d="M22 40h20l6 6h6a10 10 0 0 0 0-20H10a10 10 0 0 0 0 20h6l6-6z" /></svg>
+        <svg class="icon cross" viewBox="0 0 64 64"><path d="M28 6h8v16h16v8H36v28h-8V30H12v-8h16z"/></svg>
+        <svg class="icon chip" viewBox="0 0 64 64"><rect x="12" y="12" width="40" height="40" rx="4"/><rect x="24" y="24" width="16" height="16" rx="2"/></svg>
+      </div>
+    </section>
+
+    <section id="mission" class="section">
+      <h2>Our Mission</h2>
+      <p>We build community through <strong>games</strong>, grow in <strong>faith</strong> with short weekly devotions, and use our <strong>tech skills</strong> to bless students by building or refurbishing computers to donate.</p>
+      <div class="features">
+        <article class="card feature">
+          <div class="feature-icon" aria-hidden="true">🎮</div>
+          <h3>Gaming</h3>
+          <p>Free, cross‑platform games that are easy to learn and fun to play together.</p>
+        </article>
+        <article class="card feature">
+          <div class="feature-icon" aria-hidden="true">✝️</div>
+          <h3>Faith</h3>
+          <p>5–10 minute devotion each week connecting Scripture to gaming & tech.</p>
+        </article>
+        <article class="card feature">
+          <div class="feature-icon" aria-hidden="true">💻</div>
+          <h3>Tech</h3>
+          <p>Learn PC basics, troubleshooting, and participate in a group PC build.</p>
+        </article>
+        <article class="card feature">
+          <div class="feature-icon" aria-hidden="true">🤝</div>
+          <h3>Service</h3>
+          <p>Deliver a working computer to a student in need before Thanksgiving.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="schedule" class="section">
+      <h2>Fall 2025 Schedule</h2>
+      <p class="muted">Season: <span id="seasonRange"></span>. Click a week to expand details, add to calendar, or share an invite.</p>
+      <div id="weekGrid" class="week-grid" role="list"></div>
+    </section>
+
+    <section id="games" class="section">
+      <h2>Game Setup Guide</h2>
+      <p class="muted">All games are free and cross‑platform. Use Discord for voice chat each week.</p>
+      <div id="gameAccordions" class="accordion"></div>
+    </section>
+
+    <section id="involved" class="section">
+      <h2>Get Involved</h2>
+      <ol class="steps">
+        <li>Join our Discord server.</li>
+        <li>Pick a role: Greeter, Game Host, Devotion Leader, Tech Builder.</li>
+        <li>Bring spare parts or peripherals to donate.</li>
+        <li>Invite a friend for game night!</li>
+      </ol>
+      <form class="contact" onsubmit="return openMailto(this)">
+        <div class="grid">
+          <label>Full Name<input name="name" required /></label>
+          <label>Email<input type="email" name="email" required /></label>
+          <label>I'm interested in
+            <select name="interest">
+              <option>Gaming Night</option>
+              <option>Leading a Devotion</option>
+              <option>PC Build Team</option>
+              <option>Donating Parts</option>
+            </select>
+          </label>
+        </div>
+        <button class="btn primary" type="submit">Contact Us</button>
+      </form>
+    </section>
+
+    <section id="faq" class="section">
+      <h2>FAQ</h2>
+      <div class="faq">
+        <details>
+          <summary>How much does it cost to join?</summary>
+          <p>Nothing. All games are free to play. Donations toward the build project are optional and appreciated.</p>
+        </details>
+        <details>
+          <summary>Do I have to be “good” at games?</summary>
+          <p>Nope! We’re here for fellowship. We pick friendly, easy‑to‑learn games.</p>
+        </details>
+        <details>
+          <summary>What if I don’t game but love tech?</summary>
+          <p>Great—join the PC build nights and help refurbish, assemble, or set up software.</p>
+        </details>
+        <details>
+          <summary>Is the content family‑friendly?</summary>
+          <p>Yes. We encourage positive chat and sportsmanship at all times.</p>
+        </details>
+        <details>
+          <summary>Where do devotions fit in?</summary>
+          <p>Each night starts with a 5–10 minute devotion connecting Scripture to gaming/tech.</p>
+        </details>
+        <details>
+          <summary>How do I invite a friend?</summary>
+          <p>Share our site link or send an invite from a week card—there’s a one‑click copy button.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div>
+        <div class="brand brand-footer"><span class="ctrl-key">CTRL</span>+<span class="faith">FAITH</span></div>
+        <p class="muted">A gaming & tech fellowship at <em>[Your Church Name]</em>.</p>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li>Email: <a id="contactEmail" href="mailto:you@example.com">you@example.com</a></li>
+          <li><a id="discordFooter" href="#" class="cta">Join Discord</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li>Sundays — 9:30 & 11:00</li>
+          <li>Wednesdays — 7:00 PM</li>
+        </ul>
+      </div>
+    </div>
+    <p class="credit">Built for the CTRL + Faith ministry. &copy; <span id="year"></span></p>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
