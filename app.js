@@ -8,12 +8,20 @@ const SITE_DATA = {
     season: "Fall 2025",
     dates: { start: "2025-09-14", end: "2025-11-20" },
     discord_url: "#",
-    contact_email: "you@example.com",
+    contact_email: "zacharyjones13@gmail.com",
     church: {
       name: "Church for the One",
-      website: "https://example.com",
+      website: "https://churchforthe.one",
       services: [
-        { day: "Sunday", time: "9:30 AM", location: "Main Campus" },
+        { day: "Sunday", time: "9:00 AM", location: "Main Campus" },
+        { day: "Sunday", time: "11:00 AM", location: "Main Campus" },
+        { day: "Sunday", time: "5:00 PM", location: "Evening Service" }
+      ]
+    },
+        { day: "Sunday", time: "10:45 AM", location: "Main Campus" },
+        { day: "Wednesday", time: "6:30 PM", location: "Midweek Service" }
+      ]
+    },
         { day: "Sunday", time: "11:00 AM", location: "Main Campus" },
         { day: "Wednesday", time: "7:00 PM", location: "Midweek" }
       ]
@@ -216,7 +224,7 @@ function initNav(){
 
 // ----- Render Church Section -----
 function renderChurch(){
-  const church = SITE_DATA.group.church || {name:"Church for the One", website:"#", services:[]};
+  const church = SITE_DATA.group.church || {name:"Church for the One", website: "https://churchforthe.one", services:[]};
   const nameEl = document.getElementById("churchName");
   const siteEl = document.getElementById("churchWebsite");
   const grid = document.getElementById("churchGrid");
