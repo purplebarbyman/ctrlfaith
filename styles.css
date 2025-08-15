@@ -1,4 +1,4 @@
-/* CTRL + Faith – styles.css */
+/* CTRL + Faith – styles.css v2 */
 :root{
   --bg:#0b0f17;
   --bg-soft:#0e1420;
@@ -53,13 +53,23 @@ a:hover{filter:brightness(1.1)}
 .hero-content .sub{display:block;font-size:clamp(14px,2.2vw,18px);font-weight:400;color:var(--muted)}
 .tagline{font-size:clamp(16px,2.2vw,22px);color:var(--text);opacity:.9}
 .hero-ctas{display:flex;gap:12px;justify-content:center;margin-top:12px}
-
-.btn{border:1px solid rgba(255,255,255,.12);padding:.7rem 1rem;border-radius:12px;color:var(--text);background:#0b1220;transition:transform .05s ease, filter .2s ease}
+.btn{
+  border:1px solid rgba(255,255,255,.12);
+  padding:.7rem 1rem;
+  border-radius:12px;
+  color:var(--text);
+  background:#0b1220;
+  transition:transform .05s ease, filter .2s ease;
+}
 .btn:hover{filter:brightness(1.1)}
 .btn:active{transform:translateY(1px)}
 .btn:focus{outline:2px solid var(--primary);outline-offset:2px}
-.btn.primary{background:linear-gradient(90deg,var(--primary),var(--accent));color:#061018;font-weight:800;box-shadow:var(--glow)}
-
+.btn.primary{
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  color:#061018;
+  font-weight:800;
+  box-shadow:var(--glow);
+}
 
 .hero-icons{position:absolute;inset:auto 0 10px 0;display:flex;gap:18px;justify-content:center;opacity:.4}
 .icon{width:40px;height:40px;fill:none;stroke:var(--text);stroke-width:2}
